@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import SocialLinks from '../components/SocialLinks';
 import type { ContactForm } from '../types';
 
@@ -10,10 +11,31 @@ export default function Contact() {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
+  const formRef = useRef(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    setLoading(true);
+    setStatusMessage('');
+
+    try {
+      await emailjs.sendForm(
+        'service_hnxi254',  // Replace with your EmailJS service ID
+        'template_verjiwc', // Replace with your EmailJS template ID
+        formRef.current,
+        'DKOh7ND4cCYFgxmqv'  // Replace with your EmailJS public key
+      );
+
+      setStatusMessage('Message Sent Successfully!');
+      setFormData({ name: '', email: '', message: '' }); // Reset form fields
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      setStatusMessage('Failed to send message. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -39,7 +61,9 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact Form */}
           <motion.form
+            ref={formRef}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -91,11 +115,18 @@ export default function Contact() {
             <button
               type="submit"
               className="w-full btn btn-primary py-3"
+              disabled={loading}
             >
-              Send Message
+              {loading ? "Sending..." : "Send Message"}
             </button>
+            {statusMessage && (
+              <p className={`text-center mt-4 ${statusMessage.includes('Failed') ? 'text-red-500' : 'text-green-500'}`}>
+                {statusMessage}
+              </p>
+            )}
           </motion.form>
 
+          {/* Social Links */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
