@@ -31,7 +31,7 @@ export const techCategories: TechCategory[] = [
       },
       {
         name: "Tailwind CSS",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg",
+        icon: "https://w7.pngwing.com/pngs/771/978/png-transparent-tailwind-css-css-framework-customizable-low-level-tailwind-logo-3d-icon.png",
         proficiency: 88,
         description: "Utility-first CSS framework for rapid UI development"
       }
